@@ -132,5 +132,10 @@ weight = 40
 [markup.highlight]
 noClasses = false
 
+# blog-main/hugo.toml
+[services]
+  [services.googleAnalytics]
+    enable = false
+    
 [outputs]
 home = [ "HTML", "RSS", "JSON" ]
