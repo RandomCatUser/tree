@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 permissions:
@@ -14,6 +15,12 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    
+    # 👇 FIX 1: Set the default working directory for all 'run' steps in this job
+    defaults:
+      run:
+        working-directory: blog-main
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -22,19 +29,22 @@ jobs:
           fetch-depth: 0
 
       - name: Setup Hugo
+        # Use an action to quickly install the Hugo CLI
         uses: peaceiris/actions-hugo@v3
         with:
           hugo-version: 'latest'
           extended: true
 
       - name: Build with Hugo
+        # 'hugo --minify' is now run inside the 'blog-main' directory
         run: hugo --minify
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './public' # Hugo's default output directory
-
+          # 👇 FIX 2: Point to the 'public' directory, which is now inside 'blog-main'
+          path: './public' # This is relative to the working-directory (blog-main)
+          
   deploy:
     environment:
       name: github-pages
